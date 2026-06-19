@@ -1,0 +1,137 @@
+
+/* Class = "UIButton"; normalTitle = "Далі"; ObjectID = "0h3-I7-fze"; */
+"0h3-I7-fze.normalTitle" = "Далі";
+
+/* Class = "UIButton"; normalTitle = "Далі"; ObjectID = "1rh-MA-nDW"; */
+"1rh-MA-nDW.normalTitle" = "Далі";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "2MD-br-XKA"; */
+"2MD-br-XKA.text" = "Label";
+
+/* Class = "UILabel"; text = "No names"; ObjectID = "5ki-jC-zIW"; */
+"5ki-jC-zIW.text" = "No names";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "8EQ-mv-rY7"; */
+"8EQ-mv-rY7.text" = "Label";
+
+/* Class = "UILabel"; text = "Як обрати ім’я"; ObjectID = "9DH-wh-4lv"; */
+"9DH-wh-4lv.text" = "Як обрати ім’я";
+
+/* Class = "UIButton"; normalTitle = "ЖІНОЧІ"; ObjectID = "9Tv-q4-xXY"; */
+"9Tv-q4-xXY.normalTitle" = "ЖІНОЧІ";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Auq-D7-Giz"; */
+"Auq-D7-Giz.text" = "Label";
+
+/* Class = "UILabel"; text = "ДЛЯ ХЛОПЧИКА"; ObjectID = "Bhp-7e-0wB"; */
+"Bhp-7e-0wB.text" = "ДЛЯ ХЛОПЧИКА";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "GGg-S1-nqM"; */
+"GGg-S1-nqM.text" = "Label";
+
+/* Class = "UILabel"; text = "Спробуйте поєднати ім’я з прізвищем та по батькові"; ObjectID = "JLP-cb-O7P"; */
+"JLP-cb-O7P.text" = "Спробуйте поєднати ім’я з прізвищем та по батькові";
+
+/* Class = "UILabel"; text = "Як обрати ім’я"; ObjectID = "JYv-vw-keg"; */
+"JYv-vw-keg.text" = "Як обрати ім’я";
+
+/* Class = "UIButton"; normalTitle = "Вікіпедія"; ObjectID = "L8m-J8-kb2"; */
+"L8m-J8-kb2.normalTitle" = "Вікіпедія";
+
+/* Class = "UILabel"; text = "ДЛЯ ДІВЧИНКИ"; ObjectID = "Lud-uj-pEO"; */
+"Lud-uj-pEO.text" = "ДЛЯ ДІВЧИНКИ";
+
+/* Class = "UILabel"; text = "(вартість $1.00)"; ObjectID = "MPA-zn-r8Y"; */
+"MPA-zn-r8Y.text" = "(вартість $1.00)";
+
+/* Class = "UIButton"; normalTitle = "ЧОЛОВІЧІ"; ObjectID = "NGK-II-HG1"; */
+"NGK-II-HG1.normalTitle" = "ЧОЛОВІЧІ";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "NwI-cB-9Ts"; */
+"NwI-cB-9Ts.text" = "Label";
+
+/* Class = "UILabel"; text = "Як обрати ім’я"; ObjectID = "Q20-FR-RAy"; */
+"Q20-FR-RAy.text" = "Як обрати ім’я";
+
+
+/* Class = "UILabel"; text = "Поля не обов’язкові для заповнення."; ObjectID = "Rp6-xy-uK6"; */
+"Rp6-xy-uK6.text" = "Поля не обов’язкові для заповнення.";
+
+/* Class = "UIButton"; normalTitle = " Копіювати"; ObjectID = "Ryv-vY-QBW"; */
+"Ryv-vY-QBW.normalTitle" = " Копіювати";
+
+/* Class = "UIButton"; normalTitle = "Налаштування"; ObjectID = "S84-Tn-2cy"; */
+"S84-Tn-2cy.normalTitle" = "Налаштування";
+
+/* Class = "UIBarButtonItem"; title = " "; ObjectID = "Tih-jQ-c9v"; */
+"Tih-jQ-c9v.title" = " ";
+
+/* Class = "UIButton"; normalTitle = "Деталі"; ObjectID = "Uki-ca-R8U"; */
+"Uki-ca-R8U.normalTitle" = "Деталі";
+
+/* Class = "UIButton"; normalTitle = "Далі"; ObjectID = "VTz-50-moq"; */
+"VTz-50-moq.normalTitle" = "Далі";
+
+/* Class = "UIButton"; normalTitle = "ЧОЛОВІЧІ"; ObjectID = "VV8-wV-sSc"; */
+"VV8-wV-sSc.normalTitle" = "ЧОЛОВІЧІ";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "VhY-5K-GsE"; */
+"VhY-5K-GsE.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "agf-xZ-wBx"; */
+"agf-xZ-wBx.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Пошук імен"; ObjectID = "c96-N3-ihj"; */
+"c96-N3-ihj.normalTitle" = "Пошук імен";
+
+/* Class = "UILabel"; text = "Можливо ви хочете додати:"; ObjectID = "eli-eA-hEQ"; */
+"eli-eA-hEQ.text" = "Можливо ви хочете додати:";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "h6p-ga-Fke"; */
+"h6p-ga-Fke.text" = "Label";
+
+/* Class = "UILabel"; text = "Подумайте, яка буде коротка то пестлива форма імені."; ObjectID = "heS-iy-5Gv"; */
+"heS-iy-5Gv.text" = "Подумайте, яка буде коротка то пестлива форма імені.";
+
+
+/* Class = "UIButton"; normalTitle = "Видалити дані"; ObjectID = "imv-2S-ifc"; */
+"imv-2S-ifc.normalTitle" = "Видалити дані";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "juc-RU-mEJ"; */
+"juc-RU-mEJ.text" = "Label";
+
+/* Class = "UILabel"; text = "Введіть дані, щоб побачити поєднання імені з прізвищем та по батькові, перевірити ініціали."; ObjectID = "lHD-DQ-GLR"; */
+"lHD-DQ-GLR.text" = "Введіть дані, щоб побачити поєднання імені з прізвищем та по батькові, перевірити ініціали.";
+
+/* Class = "UILabel"; text = "Якщо ви хочете стерти всі введені дані, видалити списоки переглянутих та вподобаних імен, то натисніть на цю кнопку."; ObjectID = "mEw-Gc-HzD"; */
+"mEw-Gc-HzD.text" = "Якщо ви хочете стерти всі введені дані, видалити списоки переглянутих та вподобаних імен, то натисніть на цю кнопку.";
+
+/* Class = "UIButton"; normalTitle = "Конфіденційність"; ObjectID = "mKf-cn-q4E"; */
+"mKf-cn-q4E.normalTitle" = "Конфіденційність";
+
+
+/* Class = "UIButton"; normalTitle = "Обрані імена"; ObjectID = "r3L-aW-8py"; */
+"r3L-aW-8py.normalTitle" = "Обрані імена";
+
+/* Class = "UILabel"; text = "No names"; ObjectID = "rjE-ab-yBJ"; */
+"rjE-ab-yBJ.text" = "No names";
+
+/* Class = "UILabel"; text = "Перевірте, як будуть виглядати ініціали"; ObjectID = "t8z-Li-rXD"; */
+"t8z-Li-rXD.text" = "Перевірте, як будуть виглядати ініціали";
+
+/* Class = "UIButton"; normalTitle = "Вимкнути рекламу"; ObjectID = "tEh-hV-wWf"; */
+"tEh-hV-wWf.normalTitle" = "Вимкнути рекламу";
+
+/* Class = "UIButton"; normalTitle = "Далі"; ObjectID = "tFF-cU-1hJ"; */
+"tFF-cU-1hJ.normalTitle" = "Далі";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "tbc-mh-JL1"; */
+"tbc-mh-JL1.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Правила та умови"; ObjectID = "tqn-5y-Hvm"; */
+"tqn-5y-Hvm.normalTitle" = "Правила та умови";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "uei-qW-UqJ"; */
+"uei-qW-UqJ.text" = "Label";
+
+

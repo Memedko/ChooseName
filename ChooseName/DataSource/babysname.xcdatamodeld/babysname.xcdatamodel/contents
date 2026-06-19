@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21G651" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CNCelebrity" representedClassName="CNCelebrity" syncable="YES" codeGenerationType="class">
+        <attribute name="descriptionCelebrity" optional="YES" attributeType="String"/>
+        <attribute name="imgUrl" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nameID" optional="YES" attributeType="String"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="CNCharacter" representedClassName="CNCharacter" syncable="YES" codeGenerationType="class">
+        <attribute name="descriptionCharacter" optional="YES" attributeType="String"/>
+        <attribute name="imgUrl" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nameID" optional="YES" attributeType="String"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="CNChild" representedClassName="CNChild" syncable="YES" codeGenerationType="class">
+        <attribute name="birthday" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="death" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nameID" optional="YES" attributeType="String"/>
+        <attribute name="parents" optional="YES" attributeType="String"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="CNNameFemale" representedClassName="CNNameFemale" syncable="YES" codeGenerationType="class">
+        <attribute name="descriptionName" optional="YES" attributeType="String"/>
+        <attribute name="langs" optional="YES" attributeType="String"/>
+        <attribute name="liked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="name_en" optional="YES" attributeType="String"/>
+        <attribute name="name_ru" optional="YES" attributeType="String"/>
+        <attribute name="nameDays" optional="YES" attributeType="String"/>
+        <attribute name="nameID" optional="YES" attributeType="String"/>
+        <attribute name="sameNames" optional="YES" attributeType="String"/>
+        <attribute name="select" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="transliteration" optional="YES" attributeType="String"/>
+        <attribute name="versions" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="CNNameMale" representedClassName="CNNameMale" syncable="YES" codeGenerationType="class">
+        <attribute name="descriptionName" optional="YES" attributeType="String"/>
+        <attribute name="langs" optional="YES" attributeType="String"/>
+        <attribute name="liked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="name_en" optional="YES" attributeType="String"/>
+        <attribute name="name_ru" optional="YES" attributeType="String"/>
+        <attribute name="nameDays" optional="YES" attributeType="String"/>
+        <attribute name="nameID" optional="YES" attributeType="String"/>
+        <attribute name="sameNames" optional="YES" attributeType="String"/>
+        <attribute name="select" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="transliteration" optional="YES" attributeType="String"/>
+        <attribute name="versions" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="CNSong" representedClassName="CNSong" syncable="YES" codeGenerationType="class">
+        <attribute name="nameID" optional="YES" attributeType="String"/>
+        <attribute name="singer" optional="YES" attributeType="String"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+    </entity>
+</model>

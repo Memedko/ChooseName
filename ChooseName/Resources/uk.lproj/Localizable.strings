@@ -1,0 +1,67 @@
+/* 
+  Localizable.strings
+  ChooseName
+
+  Created by Inna Levandovskaya on 13.12.2020.
+  
+*/
+
+"Done" = "Вибрати";
+"Cancel" = "Відмінити";
+"Ok" = "Добре";
+"Delete" = "Видалити";
+"Last name" = "Прізвище";
+"Middle name" = "По батькові";
+"Yes" = "Так";
+"No" = "Ні";
+"Remove" = "Видалити";
+
+"Error.SelectGender" = "Будь ласка виберіть стать";
+"Error.EnterName" = "Будь ласка введіть ім'я";
+"Error.AddName.SavedName" = "Це ім'я вже введено";
+
+"UserData.Description" = "Всі поля є не обов'язкові для заповнення";
+"UserData.SexPlaceholder" = "Стать";
+"UserData.LastNamePlaceholder" = "Прізвище";
+"UserData.FathersNamePlaceholder" = "По батькові";
+"UserData.BirthdayPlaceholder" = "Дата народження";
+"UserData.Enter" = "Ввести";
+"UserData.Boy" = "Чоловіча";
+"UserData.Girl" = "Жіноча";
+"UserData.Skip" = "Пропустити";
+"UserData.Clear" = "Очистити";
+
+"Favorites.Title" = "Обрані імена";
+"Favorites.Type.Boy" = "Чоловічі";
+"Favorites.Type.Girl" = "Жіночі";
+"Favorites.Empty" = "Ще жодного ім'я не вибрано";
+
+"AddName.Title" = "Додати ім'я";
+"AddName.SexPlaceholder" = "Стать";
+"AddName.NamePlaceholder" = "Ім'я";
+"AddName.Add" = "Додати";
+"AddName.ClearAll" = "Видалити все";
+
+"Main.Title" = "Список імен";
+
+"Card.Empty" = "Більше немає варіантив імен";
+"Card.Details" = "Деталі";
+"Card.IDCopied" = "Номер запису скопійовано в буфер";
+"Card.Initials" = "Ініціали";
+"Card.Versions" = "Варіанти";
+"Card.Description" = "Значення";
+"Card.EnVersion" = "Англійська версія";
+"Card.RuVersion" = "Російська версія";
+"Card.NameDays" = "Іменини";
+"Card.FamousPersons" = "Видатні люди";
+"Card.Characters" = "Персонажі";
+"Card.Media" = "Медіа";
+
+"Favorites.Empty" = "Ви ще не вибрали жодного імені";
+"Favorites.Title" = "Вподобане ім'я";
+"Favorites.NameSelected" = "Ви вже оцінили це ім'я і не можете його додати до списку вподобаних.";
+"Favorites.NameLiked" = "Це ім'я вже знаходиться в списку вподобаних.";
+"Favorites.NameDisliked" = "Це ім'я вже знаходиться в списку не вподобаних.";
+
+"Settings.ConfirmTitle" = "Ви впевнені?";
+"Settings.ConfirmText" = "що хочете видалити введені призвища та по батькові, очистити список переглянутих та обраних імен";
