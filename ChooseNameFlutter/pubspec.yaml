@@ -81,6 +81,8 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/bg_splash.imageset/
+    - assets/images/logo.imageset/
     - assets/images/arrow_bottom.imageset/
     - assets/images/arrow_right.imageset/
     - assets/images/icon_no_middle.imageset/

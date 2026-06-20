@@ -10,6 +10,7 @@ import '../../data/services/share_service.dart';
 import '../../domain/use_cases/build_name_detail_sections.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../features/names/view_models/main_swipe_view_model.dart';
+import '../features/splash/views/startup_splash.dart';
 import 'app_colors.dart';
 import 'router.dart';
 
@@ -19,6 +20,7 @@ class ChooseNameApp extends StatelessWidget {
     required this.userPreferencesRepository,
     required this.localNameDatabase,
     AnalyticsService? analyticsService,
+    this.startupSplashDuration = const Duration(milliseconds: 1200),
     super.key,
   }) : analyticsService = analyticsService ?? AnalyticsService.disabled();
 
@@ -26,6 +28,7 @@ class ChooseNameApp extends StatelessWidget {
   final UserPreferencesRepository userPreferencesRepository;
   final LocalNameDatabase localNameDatabase;
   final AnalyticsService analyticsService;
+  final Duration startupSplashDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +53,10 @@ class ChooseNameApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'Імʼя малюка',
         routerConfig: router,
+        builder: (context, child) => StartupSplash(
+          showDuration: startupSplashDuration,
+          child: child ?? const SizedBox.shrink(),
+        ),
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
