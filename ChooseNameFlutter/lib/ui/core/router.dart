@@ -26,12 +26,28 @@ GoRouter createRouter({List<NavigatorObserver> observers = const []}) {
       GoRoute(
         path: '/details',
         name: 'details',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final name = state.extra;
-          if (name is NameRecord) {
-            return NameDetailScreen(name: name);
-          }
-          return const MainSwipeScreen();
+          final child = name is NameRecord
+              ? NameDetailScreen(name: name)
+              : const MainSwipeScreen();
+
+          return CustomTransitionPage<void>(
+            key: state.pageKey,
+            transitionDuration: const Duration(milliseconds: 320),
+            reverseTransitionDuration: const Duration(milliseconds: 240),
+            child: child,
+            transitionsBuilder: (_, animation, _, child) {
+              final offsetAnimation = animation.drive(
+                Tween<Offset>(
+                  begin: const Offset(0, 1),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeOutCubic)),
+              );
+
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+          );
         },
       ),
       GoRoute(
