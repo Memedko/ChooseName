@@ -29,7 +29,7 @@ Completed locally:
 - Detail screen supports copy-name-ID and local-cache related-name drilldown.
 - Montserrat Alternates fonts, Lottie JSON assets, and native `.xcassets` raster images are copied into Flutter assets.
 - Android launcher mipmap icons are regenerated from the original iOS app artwork.
-- Localization is configured with generated English and Ukrainian ARB files.
+- Localization is configured as Ukrainian-only with generated Flutter ARB output.
 - Settings screen includes clear-data, privacy policy, and platform-aware review links: Android opens the Play Store package URL, while iOS keeps the native App Store URL.
 - Validation is green through `RUN_RELEASE=1 tool/verify_android.sh`: `flutter analyze`, `flutter test` (23 tests), `flutter build apk --debug`, `flutter build apk --release`, and `flutter build appbundle --release`.
 - The Android `applicationId`, Play Store link, and Android private database path are aligned to the Firebase Android config package `com.itworksinua.BabysName2`; the Kotlin namespace remains `com.memedko.choose_name`.
@@ -183,7 +183,6 @@ ChooseNameFlutter/
           views/
             purchase_sheet.dart
     l10n/
-      app_en.arb
       app_uk.arb
   assets/
     images/
@@ -303,8 +302,8 @@ Keep the same Firestore collections:
    - Convert `.strings` files into ARB.
    - Add `flutter_localizations` and `intl`.
    - Enable `flutter: generate: true`.
-   - Add `l10n.yaml` using `lib/l10n/app_en.arb` as the template.
-   - Note: current `en.lproj` and `uk.lproj` both contain Ukrainian text, with small differences. Decide whether English should remain Ukrainian or receive real English translations.
+   - Add `l10n.yaml` using `lib/l10n/app_uk.arb` as the template.
+   - Keep Ukrainian as the only active app interface language unless product requirements change.
 
 11. Assets
    - Export `.xcassets` images into `assets/images`.
@@ -374,7 +373,7 @@ Keep the same Firestore collections:
 - Firebase config is installed locally for Android and iOS Flutter targets; live device/Xcode validation is still required.
 - StoreKit product IDs were not found in the inspected code.
 - Firebase anonymous auth must be preserved because Firestore rules may depend on it.
-- English and Ukrainian ARB resources exist; remaining translation polish should be checked with product copy before release.
+- Ukrainian is the only active app interface language; remaining copy polish should be checked with product before release.
 - The iOS project includes `GADApplicationIdentifier` and ad-deactivation screens, but Google Mobile Ads is not present in `Podfile` and active ad display code appears commented out; confirm whether ads are still required.
 - Settings/menu screens exist in the native storyboard but were not clearly reachable from the active native main screen; the Flutter main screen exposes settings directly.
 - Core Data has no explicit relationships; Flutter can model related records by `nameID`, matching current behavior.

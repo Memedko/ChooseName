@@ -81,7 +81,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('add_favorite_button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('This name is already in favorites.'), findsOneWidget);
+    expect(find.text('Це імʼя вже є у вподобаних.'), findsOneWidget);
 
     await database.close();
   });
@@ -113,7 +113,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('add_favorite_button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('This name is already in favorites.'), findsOneWidget);
+    expect(find.text('Це імʼя вже є у вподобаних.'), findsOneWidget);
     expect(await database.getLikedNames(GenderType.male), hasLength(1));
 
     await database.close();
@@ -155,7 +155,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('add_favorite_button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('This name was already dismissed.'), findsOneWidget);
+    expect(find.text('Це імʼя вже було відхилено.'), findsOneWidget);
 
     await database.close();
   });
@@ -182,15 +182,15 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('remove_favorite_Лея')));
     await tester.pumpAndSettle();
-    expect(find.text('Remove this name from favorites?'), findsOneWidget);
+    expect(find.text('Видалити це імʼя з вподобаних?'), findsOneWidget);
 
-    await tester.tap(find.text('Cancel'));
+    await tester.tap(find.text('Скасувати'));
     await tester.pumpAndSettle();
     expect(find.text('Лея'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('remove_favorite_Лея')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Remove'));
+    await tester.tap(find.text('Видалити'));
     await tester.pumpAndSettle();
 
     expect(find.text('Лея'), findsNothing);
