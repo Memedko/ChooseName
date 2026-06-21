@@ -41,4 +41,46 @@ void main() {
     final liked = await database.getLikedNames(GenderType.male);
     expect(liked.single.nameId, 'marko');
   });
+
+  test(
+    'records likes without showing loader or resetting the active deck',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(database.close);
+      for (final name in const <NameRecord>[
+        NameRecord(nameId: 'one', name: 'Один'),
+        NameRecord(nameId: 'two', name: 'Два'),
+        NameRecord(nameId: 'three', name: 'Три'),
+      ]) {
+        await database.upsertName(GenderType.male, name);
+      }
+      final preferences = await SharedPreferences.getInstance();
+      final viewModel = MainSwipeViewModel(
+        nameRepository: NameRepository(localDatabase: database),
+        userPreferencesRepository: UserPreferencesRepository(
+          preferences: preferences,
+        ),
+      );
+      addTearDown(viewModel.dispose);
+
+      await viewModel.load();
+      final loadingStates = <bool>[];
+      viewModel.addListener(() => loadingStates.add(viewModel.isLoading));
+
+      final didLike = await viewModel.like(viewModel.names.first);
+
+      expect(didLike, isTrue);
+      expect(viewModel.isLoading, isFalse);
+      expect(loadingStates, isNot(contains(true)));
+      expect(viewModel.names.map((name) => name.nameId), <String?>[
+        'one',
+        'two',
+        'three',
+      ]);
+
+      final unseen = await database.getUnseenNames(GenderType.male);
+      expect(unseen.map((name) => name.nameId), <String?>['two', 'three']);
+    },
+  );
 }

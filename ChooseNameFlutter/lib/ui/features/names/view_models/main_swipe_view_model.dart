@@ -24,6 +24,7 @@ class MainSwipeViewModel extends ChangeNotifier {
 
   GenderType _selectedGender;
   bool _isLoading = false;
+  bool _hasReachedEnd = false;
   String? _error;
   String _searchText = '';
   List<NameRecord> _names = const <NameRecord>[];
@@ -31,12 +32,14 @@ class MainSwipeViewModel extends ChangeNotifier {
 
   GenderType get selectedGender => _selectedGender;
   bool get isLoading => _isLoading;
+  bool get hasReachedEnd => _hasReachedEnd;
   String? get error => _error;
   List<NameRecord> get names => _names;
   int get shownCardsCount => _userPreferencesRepository.getShownCardsCount();
 
   Future<void> load() async {
     _isLoading = true;
+    _hasReachedEnd = false;
     _error = null;
     notifyListeners();
     try {
@@ -70,7 +73,6 @@ class MainSwipeViewModel extends ChangeNotifier {
     await _userPreferencesRepository.incrementShownCardsCount();
     await _nameRepository.likeName(_selectedGender, nameId);
     await _analyticsService.logNameLiked(name, _selectedGender);
-    await load();
     return true;
   }
 
@@ -82,7 +84,6 @@ class MainSwipeViewModel extends ChangeNotifier {
     await _userPreferencesRepository.incrementShownCardsCount();
     await _nameRepository.dislikeName(_selectedGender, nameId);
     await _analyticsService.logNameDisliked(name, _selectedGender);
-    await load();
     return true;
   }
 
@@ -99,6 +100,7 @@ class MainSwipeViewModel extends ChangeNotifier {
       return;
     }
     _isLoading = true;
+    _hasReachedEnd = false;
     _error = null;
     notifyListeners();
     try {
@@ -113,6 +115,14 @@ class MainSwipeViewModel extends ChangeNotifier {
     }
   }
 
+  void markDeckCompleted() {
+    if (_hasReachedEnd) {
+      return;
+    }
+    _hasReachedEnd = true;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _remoteNamesSubscription?.cancel();
@@ -124,16 +134,10 @@ class MainSwipeViewModel extends ChangeNotifier {
     _remoteNamesSubscription = _nameRepository
         .watchNames(gender)
         .listen(
-          (names) async {
+          (_) {
             if (_selectedGender != gender) {
               return;
             }
-            if (_searchText.isEmpty) {
-              _names = names;
-            } else {
-              _names = await _nameRepository.search(gender, _searchText);
-            }
-            notifyListeners();
           },
           onError: (Object error) {
             if (_selectedGender != gender) {

@@ -47,4 +47,31 @@ void main() {
     expect(liked.single.name, 'Лея');
     expect(liked.single.nameId, isNull);
   });
+
+  test(
+    'keeps local decisions when remote data updates an existing name',
+    () async {
+      await database.upsertName(
+        GenderType.male,
+        const NameRecord(nameId: 'andrii', name: 'Андрій'),
+      );
+      await database.setDecision(GenderType.male, 'andrii', NameDecision.liked);
+
+      await database.upsertName(
+        GenderType.male,
+        const NameRecord(
+          nameId: 'andrii',
+          name: 'Андрійко',
+          description: 'Оновлений опис',
+        ),
+      );
+
+      expect(await database.getUnseenNames(GenderType.male), isEmpty);
+
+      final liked = await database.getLikedNames(GenderType.male);
+      expect(liked.single.name, 'Андрійко');
+      expect(liked.single.description, 'Оновлений опис');
+      expect(liked.single.decision, NameDecision.liked);
+    },
+  );
 }

@@ -329,7 +329,7 @@ class _BodyState extends State<_Body> {
         child: CircularProgressIndicator(color: AppColors.secondaryText),
       );
     }
-    if (viewModel.names.isEmpty) {
+    if (viewModel.names.isEmpty || viewModel.hasReachedEnd) {
       return _EmptyCard(
         message: viewModel.error ?? l10n.mainEmpty,
         listAgainLabel: l10n.listAgain,
@@ -355,6 +355,7 @@ class _BodyState extends State<_Body> {
           await viewModel.dislike(swipedName);
         }
       },
+      onEnd: viewModel.markDeckCompleted,
       cardCount: viewModel.names.length,
       cardBuilder: (context, index) {
         final name = viewModel.names[index];

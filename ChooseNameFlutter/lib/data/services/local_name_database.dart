@@ -154,8 +154,12 @@ class LocalNameDatabase extends _$LocalNameDatabase {
         versions: Value(name.versions),
         sameNames: Value(name.sameNames),
         langs: Value(name.langs),
-        selectValue: Value(name.decision.value),
-        liked: Value(name.isChosenFavorite),
+        selectValue: existing == null
+            ? Value(name.decision.value)
+            : const Value.absent(),
+        liked: existing == null
+            ? Value(name.isChosenFavorite)
+            : const Value.absent(),
       );
       if (existing == null) {
         await into(localNames).insert(companion);
