@@ -3,9 +3,12 @@ import 'package:choose_name/data/repositories/user_preferences_repository.dart';
 import 'package:choose_name/data/services/local_name_database.dart';
 import 'package:choose_name/domain/models/celebrity.dart';
 import 'package:choose_name/domain/models/character.dart';
+import 'package:choose_name/domain/models/gender_type.dart';
 import 'package:choose_name/domain/models/name_record.dart';
 import 'package:choose_name/domain/use_cases/build_name_detail_sections.dart';
 import 'package:choose_name/l10n/generated/app_localizations.dart';
+import 'package:choose_name/ui/core/app_colors.dart';
+import 'package:choose_name/ui/core/constants.dart';
 import 'package:choose_name/ui/features/names/views/name_detail_screen.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +47,7 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: NameDetailScreen(
+            gender: GenderType.male,
             name: NameRecord(
               name: 'Марко',
               description: 'Значення імені',
@@ -96,6 +100,7 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: NameDetailScreen(
+            gender: GenderType.male,
             name: NameRecord(
               name: 'Марко',
               celebrities: <Celebrity>[
@@ -128,5 +133,53 @@ void main() {
     );
     expect(find.text('Known for carrying the name.'), findsOne);
     expect(find.text('A fictional name bearer.'), findsOne);
+  });
+
+  testWidgets('uses route gender instead of saved selected gender for theme', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      AppConstants.isMaleSelected: true,
+    });
+    final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final preferences = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider.value(value: database),
+          Provider(create: (_) => NameRepository(localDatabase: database)),
+          Provider(
+            create: (_) => UserPreferencesRepository(preferences: preferences),
+          ),
+          Provider(create: (_) => BuildNameDetailSections()),
+        ],
+        child: const MaterialApp(
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: NameDetailScreen(
+            gender: GenderType.female,
+            name: NameRecord(name: 'Анна', description: 'Значення імені'),
+          ),
+        ),
+      ),
+    );
+
+    final background = tester.widget<DecoratedBox>(
+      find.byKey(const ValueKey('detail_background')),
+    );
+    final decoration = background.decoration as BoxDecoration;
+    final gradient = decoration.gradient as LinearGradient;
+
+    expect(gradient.colors, <Color>[
+      AppColors.girlGradientStart,
+      AppColors.girlGradientEnd,
+    ]);
   });
 }

@@ -17,17 +17,18 @@ import '../../../../domain/models/song.dart';
 import '../../../../domain/use_cases/build_name_detail_sections.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../core/app_colors.dart';
+import '../navigation/name_detail_route_args.dart';
 
 class NameDetailScreen extends StatelessWidget {
-  const NameDetailScreen({required this.name, super.key});
+  const NameDetailScreen({required this.name, required this.gender, super.key});
 
   final NameRecord name;
+  final GenderType gender;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final preferences = context.read<UserPreferencesRepository>();
-    final gender = preferences.getSelectedGender();
     final sections = context.read<BuildNameDetailSections>()(
       name: name,
       gender: gender,
@@ -42,6 +43,7 @@ class NameDetailScreen extends StatelessWidget {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         body: DecoratedBox(
+          key: const ValueKey('detail_background'),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -704,7 +706,10 @@ class _RelatedNameRow extends StatelessWidget {
         final repository = context.read<NameRepository>();
         final match = await repository.findExact(gender, name);
         if (context.mounted && match != null) {
-          context.pushNamed('details', extra: match);
+          context.pushNamed(
+            'details',
+            extra: NameDetailRouteArgs(name: match, gender: gender),
+          );
         }
       },
       child: SizedBox(

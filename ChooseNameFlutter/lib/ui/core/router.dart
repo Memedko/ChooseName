@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../domain/models/name_record.dart';
 import '../features/favorites/views/favorites_screen.dart';
+import '../features/names/navigation/name_detail_route_args.dart';
 import '../features/names/views/name_detail_screen.dart';
 import '../features/names/views/main_swipe_screen.dart';
 import '../features/profile/views/initial_name_form.dart';
@@ -27,9 +27,9 @@ GoRouter createRouter({List<NavigatorObserver> observers = const []}) {
         path: '/details',
         name: 'details',
         pageBuilder: (context, state) {
-          final name = state.extra;
-          final child = name is NameRecord
-              ? NameDetailScreen(name: name)
+          final args = state.extra;
+          final child = args is NameDetailRouteArgs
+              ? NameDetailScreen(name: args.name, gender: args.gender)
               : const MainSwipeScreen();
 
           return CustomTransitionPage<void>(

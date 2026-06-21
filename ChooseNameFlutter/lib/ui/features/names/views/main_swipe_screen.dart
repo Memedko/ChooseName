@@ -8,6 +8,7 @@ import '../../../../domain/models/gender_type.dart';
 import '../../../../domain/models/name_record.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../core/app_colors.dart';
+import '../navigation/name_detail_route_args.dart';
 import '../view_models/main_swipe_view_model.dart';
 import 'name_card.dart';
 
@@ -366,7 +367,13 @@ class _BodyState extends State<_Body> {
           detailsLabel: l10n.details,
           likedStatusLabel: l10n.likedThisName,
           dislikedStatusLabel: l10n.dislikedThisName,
-          onDetails: () => context.pushNamed('details', extra: name),
+          onDetails: () => context.pushNamed(
+            'details',
+            extra: NameDetailRouteArgs(
+              name: name,
+              gender: viewModel.selectedGender,
+            ),
+          ),
         );
       },
     );

@@ -10,6 +10,7 @@ import '../../../../domain/models/name_record.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/constants.dart';
+import '../../names/navigation/name_detail_route_args.dart';
 import '../view_models/favorites_view_model.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -348,7 +349,13 @@ class _FavoriteTile extends StatelessWidget {
               if ((name.description?.isNotEmpty ?? false) &&
                   name.nameId != null)
                 IconButton(
-                  onPressed: () => context.pushNamed('details', extra: name),
+                  onPressed: () => context.pushNamed(
+                    'details',
+                    extra: NameDetailRouteArgs(
+                      name: name,
+                      gender: viewModel.selectedGender,
+                    ),
+                  ),
                   icon: const Icon(Icons.chevron_right),
                 ),
               IconButton(
