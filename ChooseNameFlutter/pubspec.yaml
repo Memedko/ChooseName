@@ -85,7 +85,13 @@ flutter:
     - assets/images/logo.imageset/
     - assets/images/arrow_bottom.imageset/
     - assets/images/arrow_right.imageset/
+    - assets/images/arrow_table.imageset/
+    - assets/images/icon_close_menu.imageset/
+    - assets/images/icon_like_off.imageset/
+    - assets/images/icon_like_on.imageset/
     - assets/images/icon_no_middle.imageset/
+    - assets/images/icon_plus.imageset/
+    - assets/images/icon_share.imageset/
     - assets/images/icon_yes_middle.imageset/
     - assets/images/photo_defaulte.imageset/
     - assets/images/Children/icon_child_0-2.imageset/

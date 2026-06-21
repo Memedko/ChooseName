@@ -35,6 +35,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const ValueKey('open_add_favorite_button')));
+    await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('favorite_add_field')),
       'Лея',
@@ -74,6 +76,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const ValueKey('open_add_favorite_button')));
+    await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('favorite_add_field')),
       'Марко',
@@ -106,6 +110,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const ValueKey('open_add_favorite_button')));
+    await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('favorite_add_field')),
       'Лея',
@@ -148,6 +154,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const ValueKey('open_add_favorite_button')));
+    await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('favorite_add_field')),
       'Іван',
@@ -180,7 +188,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const ValueKey('remove_favorite_Лея')));
+    await tester.drag(
+      find.byKey(const ValueKey('favorite_Лея')),
+      const Offset(-500, 0),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Видалити це імʼя з вподобаних?'), findsOneWidget);
 
@@ -188,9 +199,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Лея'), findsOneWidget);
 
-    await tester.tap(find.byKey(const ValueKey('remove_favorite_Лея')));
+    await tester.drag(
+      find.byKey(const ValueKey('favorite_Лея')),
+      const Offset(-500, 0),
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Видалити'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Видалити'));
     await tester.pumpAndSettle();
 
     expect(find.text('Лея'), findsNothing);
