@@ -65,6 +65,52 @@ void main() {
     final unseen = await database.getUnseenNames(GenderType.male);
     expect(unseen.map((name) => name.nameId), <String?>['andrii']);
   });
+
+  testWidgets('opens and closes the main search panel', (tester) async {
+    await _pumpPickerWithTwoNames(tester);
+
+    expect(find.byKey(const ValueKey('main_search_field')), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('open_search_button')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 260));
+
+    expect(find.byKey(const ValueKey('main_search_panel')), findsOneWidget);
+    expect(find.byKey(const ValueKey('main_search_field')), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('main_search_field')),
+      'Андрій',
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 260));
+
+    expect(find.byKey(const ValueKey('name_card_marko')), findsNothing);
+    expect(find.byKey(const ValueKey('name_card_andrii')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('close_search_button')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 260));
+
+    expect(find.byKey(const ValueKey('main_search_field')), findsNothing);
+  });
+
+  testWidgets('closes the main search panel when gender changes', (
+    tester,
+  ) async {
+    await _pumpPickerWithTwoNames(tester);
+
+    await tester.tap(find.byKey(const ValueKey('open_search_button')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 260));
+    expect(find.byKey(const ValueKey('main_search_field')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('female_gender_tab')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 260));
+
+    expect(find.byKey(const ValueKey('main_search_field')), findsNothing);
+  });
 }
 
 Future<LocalNameDatabase> _pumpPickerWithTwoNames(WidgetTester tester) async {

@@ -1,5 +1,6 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +23,53 @@ class MainSwipeScreen extends StatefulWidget {
 
 class _MainSwipeScreenState extends State<MainSwipeScreen> {
   final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
   bool _searchOpen = false;
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _openSearch() {
+    if (_searchOpen) {
+      _searchFocusNode.requestFocus();
+      SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+      return;
+    }
+    setState(() => _searchOpen = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _searchOpen) {
+        _searchFocusNode.requestFocus();
+        SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+      }
+    });
+  }
+
+  void _closeSearch(MainSwipeViewModel viewModel) {
+    final hadSearchText = _searchController.text.trim().isNotEmpty;
+    _searchFocusNode.unfocus();
+    _searchController.clear();
+    if (_searchOpen) {
+      setState(() => _searchOpen = false);
+    }
+    if (hadSearchText) {
+      viewModel.search('');
+    }
+  }
+
+  void _selectGender(MainSwipeViewModel viewModel, GenderType gender) {
+    if (viewModel.selectedGender == gender) {
+      return;
+    }
+    _searchFocusNode.unfocus();
+    _searchController.clear();
+    if (_searchOpen) {
+      setState(() => _searchOpen = false);
+    }
+    viewModel.selectGender(gender);
   }
 
   @override
@@ -54,18 +96,19 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
           child: Column(
             children: [
               _TopBar(
+                isMale: isMale,
                 searchOpen: _searchOpen,
                 searchController: _searchController,
-                l10n: l10n,
+                searchFocusNode: _searchFocusNode,
                 onSearchChanged: viewModel.search,
-                onSearchOpen: () => setState(() => _searchOpen = true),
-                onSearchClose: () {
-                  _searchController.clear();
-                  viewModel.search('');
-                  setState(() => _searchOpen = false);
-                },
+                onSearchOpen: _openSearch,
+                onSearchClose: () => _closeSearch(viewModel),
               ),
-              _GenderTabs(l10n: l10n, viewModel: viewModel),
+              _GenderTabs(
+                l10n: l10n,
+                viewModel: viewModel,
+                onGenderSelected: (gender) => _selectGender(viewModel, gender),
+              ),
               Expanded(
                 child: _Body(viewModel: viewModel, l10n: l10n),
               ),
@@ -79,17 +122,19 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
 
 class _TopBar extends StatelessWidget {
   const _TopBar({
+    required this.isMale,
     required this.searchOpen,
     required this.searchController,
-    required this.l10n,
+    required this.searchFocusNode,
     required this.onSearchChanged,
     required this.onSearchOpen,
     required this.onSearchClose,
   });
 
+  final bool isMale;
   final bool searchOpen;
   final TextEditingController searchController;
-  final AppLocalizations l10n;
+  final FocusNode searchFocusNode;
   final ValueChanged<String> onSearchChanged;
   final VoidCallback onSearchOpen;
   final VoidCallback onSearchClose;
@@ -97,39 +142,83 @@ class _TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 75,
+      height: 90,
       child: Stack(
         children: [
-          Row(
-            children: [
-              _TopIconButton(
-                key: const ValueKey('favorites_button'),
-                icon: Icons.favorite,
-                onPressed: () => context.pushNamed('favorites'),
-              ),
-              const Spacer(),
-              _TopIconButton(
-                key: const ValueKey('profile_button'),
-                icon: Icons.edit,
-                onPressed: () => context.pushNamed('profile'),
-              ),
-              _TopIconButton(
-                key: const ValueKey('settings_button'),
-                icon: Icons.settings,
-                onPressed: () => context.pushNamed('settings'),
-              ),
-              _TopIconButton(icon: Icons.search, onPressed: onSearchOpen),
-            ],
-          ),
-          if (searchOpen)
-            Positioned.fill(
-              child: _SearchPanel(
-                controller: searchController,
-                l10n: l10n,
-                onChanged: onSearchChanged,
-                onClose: onSearchClose,
+          IgnorePointer(
+            ignoring: searchOpen,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 120),
+              opacity: searchOpen ? 0 : 1,
+              child: Row(
+                children: [
+                  _TopIconButton(
+                    key: const ValueKey('favorites_button'),
+                    icon: Icons.favorite,
+                    onPressed: () => context.pushNamed('favorites'),
+                  ),
+                  const Spacer(),
+                  _TopIconButton(
+                    key: const ValueKey('profile_button'),
+                    icon: Icons.edit,
+                    onPressed: () => context.pushNamed('profile'),
+                  ),
+                  _TopIconButton(
+                    key: const ValueKey('settings_button'),
+                    icon: Icons.settings,
+                    onPressed: () => context.pushNamed('settings'),
+                  ),
+                  _TopIconButton(
+                    key: const ValueKey('open_search_button'),
+                    icon: Icons.search,
+                    onPressed: onSearchOpen,
+                  ),
+                ],
               ),
             ),
+          ),
+          Positioned.fill(
+            child: AnimatedSwitcher(
+              key: const ValueKey('main_search_switcher'),
+              duration: const Duration(milliseconds: 240),
+              reverseDuration: const Duration(milliseconds: 200),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              layoutBuilder: (currentChild, previousChildren) {
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    for (final child in previousChildren)
+                      Positioned.fill(child: child),
+                    if (currentChild != null)
+                      Positioned.fill(child: currentChild),
+                  ],
+                );
+              },
+              transitionBuilder: (child, animation) {
+                final offsetAnimation = Tween<Offset>(
+                  begin: const Offset(-1, 0),
+                  end: Offset.zero,
+                ).animate(animation);
+                return ClipRect(
+                  child: SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  ),
+                );
+              },
+              child: searchOpen
+                  ? _SearchPanel(
+                      key: const ValueKey('main_search_panel'),
+                      isMale: isMale,
+                      controller: searchController,
+                      focusNode: searchFocusNode,
+                      onChanged: onSearchChanged,
+                      onClose: onSearchClose,
+                    )
+                  : const SizedBox.shrink(key: ValueKey('main_search_closed')),
+            ),
+          ),
         ],
       ),
     );
@@ -162,57 +251,108 @@ class _TopIconButton extends StatelessWidget {
 
 class _SearchPanel extends StatelessWidget {
   const _SearchPanel({
+    required this.isMale,
     required this.controller,
-    required this.l10n,
+    required this.focusNode,
     required this.onChanged,
     required this.onClose,
+    super.key,
   });
 
+  static const _boySearchBar = Color(0xFF6A3A97);
+  static const _girlSearchBar = Color(0xFF983374);
+
+  final bool isMale;
   final TextEditingController controller;
-  final AppLocalizations l10n;
+  final FocusNode focusNode;
   final ValueChanged<String> onChanged;
   final VoidCallback onClose;
+
+  void _focusSearch() {
+    focusNode.requestFocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+  }
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: Colors.white.withValues(alpha: 0.15),
+      color: isMale ? _boySearchBar : _girlSearchBar,
       child: Row(
         children: [
-          const SizedBox(width: 30),
-          const Icon(Icons.search, color: AppColors.noteText, size: 34),
-          const SizedBox(width: 10),
+          const SizedBox(width: 34),
+          const Icon(
+            Icons.search,
+            key: ValueKey('main_search_icon'),
+            color: AppColors.noteText,
+            size: 45,
+          ),
+          const SizedBox(width: 18),
           Expanded(
-            child: TextField(
-              key: const ValueKey('main_search_field'),
-              controller: controller,
-              autofocus: true,
-              autocorrect: false,
-              textCapitalization: TextCapitalization.words,
-              onChanged: onChanged,
-              cursorColor: AppColors.mainText,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.secondaryText,
-                fontSize: 23,
-                fontWeight: FontWeight.w500,
-              ),
-              decoration: InputDecoration(
-                hintText: l10n.searchHint,
-                hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.noteText,
-                  fontSize: 23,
-                  fontWeight: FontWeight.w500,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: _focusSearch,
+              child: SizedBox(
+                height: 56,
+                child: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: controller,
+                  builder: (context, value, _) {
+                    return Row(
+                      children: [
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 120),
+                          opacity: value.text.isEmpty ? 1 : 0,
+                          child: Container(
+                            width: 2.5,
+                            height: 46,
+                            color: AppColors.mainText,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            key: const ValueKey('main_search_field'),
+                            controller: controller,
+                            focusNode: focusNode,
+                            autofocus: true,
+                            autocorrect: false,
+                            showCursor: value.text.isNotEmpty,
+                            textAlignVertical: TextAlignVertical.center,
+                            textCapitalization: TextCapitalization.words,
+                            onTap: _focusSearch,
+                            onChanged: onChanged,
+                            cursorColor: AppColors.mainText,
+                            cursorHeight: 46,
+                            cursorWidth: 2.5,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  color: AppColors.mainText,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              isCollapsed: true,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                border: InputBorder.none,
               ),
             ),
           ),
-          SizedBox.square(
-            dimension: 75,
+          SizedBox(
+            width: 86,
+            height: 90,
             child: IconButton(
+              key: const ValueKey('close_search_button'),
               onPressed: onClose,
               color: AppColors.secondaryText,
-              icon: const Icon(Icons.cancel, size: 24),
+              icon: const Icon(Icons.close, size: 43),
             ),
           ),
         ],
@@ -222,10 +362,15 @@ class _SearchPanel extends StatelessWidget {
 }
 
 class _GenderTabs extends StatelessWidget {
-  const _GenderTabs({required this.l10n, required this.viewModel});
+  const _GenderTabs({
+    required this.l10n,
+    required this.viewModel,
+    required this.onGenderSelected,
+  });
 
   final AppLocalizations l10n;
   final MainSwipeViewModel viewModel;
+  final ValueChanged<GenderType> onGenderSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -235,15 +380,17 @@ class _GenderTabs extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _GenderButton(
+            key: const ValueKey('male_gender_tab'),
             label: l10n.maleNames.toUpperCase(),
             selected: viewModel.selectedGender == GenderType.male,
-            onPressed: () => viewModel.selectGender(GenderType.male),
+            onPressed: () => onGenderSelected(GenderType.male),
           ),
           const SizedBox(width: 40),
           _GenderButton(
+            key: const ValueKey('female_gender_tab'),
             label: l10n.femaleNames.toUpperCase(),
             selected: viewModel.selectedGender == GenderType.female,
-            onPressed: () => viewModel.selectGender(GenderType.female),
+            onPressed: () => onGenderSelected(GenderType.female),
           ),
         ],
       ),
@@ -256,6 +403,7 @@ class _GenderButton extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onPressed,
+    super.key,
   });
 
   final String label;
