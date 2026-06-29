@@ -114,7 +114,7 @@ void main() {
       find.byKey(const ValueKey('detail_close_button')),
     );
     final arrowCenter = tester.getCenter(
-      find.byKey(const ValueKey('detail_close_arrow')),
+      find.byKey(const ValueKey('detail_close_arrow_visual')),
     );
 
     expect((buttonCenter.dy - arrowCenter.dy).abs(), lessThanOrEqualTo(0.5));

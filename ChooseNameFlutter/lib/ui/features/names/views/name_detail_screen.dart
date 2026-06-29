@@ -136,19 +136,40 @@ class _CloseButton extends StatelessWidget {
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
             const SizedBox(width: 8),
-            SizedBox(
-              key: const ValueKey('detail_close_arrow'),
-              width: 23,
-              height: 23,
-              child: Center(
-                child: Image.asset(
-                  'assets/images/arrow_bottom.imageset/arrow_bottom.png',
-                  width: 23,
-                  height: 22,
-                ),
-              ),
-            ),
+            const _CloseArrow(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CloseArrow extends StatelessWidget {
+  const _CloseArrow();
+
+  static const _asset = 'assets/images/arrow_bottom.imageset/arrow_bottom.png';
+  static const _assetWidth = 23.0;
+  static const _assetHeight = 22.0;
+  static const _visibleHeight = 12.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      key: const ValueKey('detail_close_arrow'),
+      width: 23,
+      height: 23,
+      child: Center(
+        child: ClipRect(
+          key: const ValueKey('detail_close_arrow_visual'),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            heightFactor: _visibleHeight / _assetHeight,
+            child: Image.asset(
+              _asset,
+              width: _assetWidth,
+              height: _assetHeight,
+            ),
+          ),
         ),
       ),
     );
