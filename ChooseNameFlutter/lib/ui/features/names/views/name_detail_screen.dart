@@ -99,6 +99,7 @@ class _CloseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      key: const ValueKey('detail_close_button'),
       width: 150,
       height: 36,
       child: OutlinedButton(
@@ -116,6 +117,7 @@ class _CloseButton extends StatelessWidget {
           ),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -123,10 +125,17 @@ class _CloseButton extends StatelessWidget {
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
             const SizedBox(width: 8),
-            Image.asset(
-              'assets/images/arrow_bottom.imageset/arrow_bottom.png',
+            SizedBox(
+              key: const ValueKey('detail_close_arrow'),
               width: 23,
               height: 23,
+              child: Center(
+                child: Image.asset(
+                  'assets/images/arrow_bottom.imageset/arrow_bottom.png',
+                  width: 23,
+                  height: 22,
+                ),
+              ),
             ),
           ],
         ),

@@ -75,6 +75,51 @@ void main() {
     expect(find.text('Versions'), findsNothing);
   });
 
+  testWidgets('centers close arrow vertically in the close button', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final preferences = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider.value(value: database),
+          Provider(create: (_) => NameRepository(localDatabase: database)),
+          Provider(
+            create: (_) => UserPreferencesRepository(preferences: preferences),
+          ),
+          Provider(create: (_) => BuildNameDetailSections()),
+        ],
+        child: const MaterialApp(
+          locale: Locale('uk'),
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: NameDetailScreen(
+            gender: GenderType.male,
+            name: NameRecord(name: 'Марко'),
+          ),
+        ),
+      ),
+    );
+
+    final buttonCenter = tester.getCenter(
+      find.byKey(const ValueKey('detail_close_button')),
+    );
+    final arrowCenter = tester.getCenter(
+      find.byKey(const ValueKey('detail_close_arrow')),
+    );
+
+    expect((buttonCenter.dy - arrowCenter.dy).abs(), lessThanOrEqualTo(0.5));
+  });
+
   testWidgets('renders celebrity and character image rows', (tester) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
