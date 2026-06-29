@@ -12,6 +12,7 @@ class NameCard extends StatelessWidget {
     required this.likedStatusLabel,
     required this.dislikedStatusLabel,
     this.fullName,
+    this.compact = false,
     super.key,
   });
 
@@ -21,48 +22,93 @@ class NameCard extends StatelessWidget {
   final String likedStatusLabel;
   final String dislikedStatusLabel;
   final String? fullName;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    final hasSupportingInfo =
+        (fullName?.isNotEmpty ?? false) ||
+        name.decision != NameDecision.neutral;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onDetails,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              const Spacer(flex: 88),
-              Text(
-                name.name,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  color: AppColors.mainText,
-                  fontSize: 37,
-                  fontWeight: FontWeight.w500,
+          child: compact
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _NameText(name: name.name),
+                      if (hasSupportingInfo) ...[
+                        const SizedBox(height: 18),
+                        SizedBox(
+                          width: double.infinity,
+                          child: _FullNameAndStatus(
+                            fullName: fullName,
+                            decision: name.decision,
+                            likedStatusLabel: likedStatusLabel,
+                            dislikedStatusLabel: dislikedStatusLabel,
+                          ),
+                        ),
+                      ],
+                      SizedBox(height: hasSupportingInfo ? 24 : 52),
+                      if (name.description?.isNotEmpty ?? false)
+                        _DetailsButton(
+                          label: detailsLabel,
+                          onPressed: onDetails,
+                        )
+                      else
+                        const SizedBox(height: 36),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    const Spacer(flex: 88),
+                    _NameText(name: name.name),
+                    const Spacer(flex: 44),
+                    SizedBox(
+                      width: double.infinity,
+                      child: _FullNameAndStatus(
+                        fullName: fullName,
+                        decision: name.decision,
+                        likedStatusLabel: likedStatusLabel,
+                        dislikedStatusLabel: dislikedStatusLabel,
+                      ),
+                    ),
+                    const Spacer(flex: 84),
+                    if (name.description?.isNotEmpty ?? false)
+                      _DetailsButton(label: detailsLabel, onPressed: onDetails)
+                    else
+                      const SizedBox(height: 36),
+                    const SizedBox(height: 60),
+                  ],
                 ),
-              ),
-              const Spacer(flex: 44),
-              SizedBox(
-                width: double.infinity,
-                child: _FullNameAndStatus(
-                  fullName: fullName,
-                  decision: name.decision,
-                  likedStatusLabel: likedStatusLabel,
-                  dislikedStatusLabel: dislikedStatusLabel,
-                ),
-              ),
-              const Spacer(flex: 84),
-              if (name.description?.isNotEmpty ?? false)
-                _DetailsButton(label: detailsLabel, onPressed: onDetails)
-              else
-                const SizedBox(height: 36),
-              const SizedBox(height: 60),
-            ],
-          ),
         ),
+      ),
+    );
+  }
+}
+
+class _NameText extends StatelessWidget {
+  const _NameText({required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      name,
+      textAlign: TextAlign.center,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+        color: AppColors.mainText,
+        fontSize: 37,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

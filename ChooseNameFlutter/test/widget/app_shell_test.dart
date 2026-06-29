@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:choose_name/data/repositories/name_repository.dart';
 import 'package:choose_name/data/repositories/user_preferences_repository.dart';
 import 'package:choose_name/data/services/local_name_database.dart';
@@ -110,6 +112,26 @@ void main() {
     await tester.pump(const Duration(milliseconds: 260));
 
     expect(find.byKey(const ValueKey('main_search_field')), findsNothing);
+  });
+
+  testWidgets('hides swipe actions while search keyboard is visible', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await _pumpPickerWithTwoNames(tester);
+
+    expect(find.byKey(const ValueKey('swipe_action_bar')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('open_search_button')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 260));
+    tester.view.viewInsets = const FakeViewPadding(bottom: 900);
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('main_search_field')), findsOneWidget);
+    expect(find.byKey(const ValueKey('swipe_action_bar')), findsNothing);
   });
 }
 

@@ -77,6 +77,8 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
     final l10n = AppLocalizations.of(context)!;
     final viewModel = context.watch<MainSwipeViewModel>();
     final isMale = viewModel.selectedGender.isMale;
+    final compactForSearch =
+        _searchOpen && MediaQuery.viewInsetsOf(context).bottom > 0;
 
     return Scaffold(
       body: DecoratedBox(
@@ -110,7 +112,11 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
                 onGenderSelected: (gender) => _selectGender(viewModel, gender),
               ),
               Expanded(
-                child: _Body(viewModel: viewModel, l10n: l10n),
+                child: _Body(
+                  viewModel: viewModel,
+                  l10n: l10n,
+                  compactForSearch: compactForSearch,
+                ),
               ),
             ],
           ),
@@ -409,10 +415,15 @@ class _GenderButton extends StatelessWidget {
 }
 
 class _Body extends StatefulWidget {
-  const _Body({required this.viewModel, required this.l10n});
+  const _Body({
+    required this.viewModel,
+    required this.l10n,
+    required this.compactForSearch,
+  });
 
   final MainSwipeViewModel viewModel;
   final AppLocalizations l10n;
+  final bool compactForSearch;
 
   @override
   State<_Body> createState() => _BodyState();
@@ -437,12 +448,14 @@ class _BodyState extends State<_Body> {
         Expanded(
           child: _cardArea(viewModel: viewModel, l10n: l10n),
         ),
-        _SwipeActionBar(
-          viewModel: viewModel,
-          l10n: l10n,
-          onDislike: _controller.swipeLeft,
-          onLike: _controller.swipeRight,
-        ),
+        if (!widget.compactForSearch)
+          _SwipeActionBar(
+            key: const ValueKey('swipe_action_bar'),
+            viewModel: viewModel,
+            l10n: l10n,
+            onDislike: _controller.swipeLeft,
+            onLike: _controller.swipeRight,
+          ),
       ],
     );
   }
@@ -489,6 +502,7 @@ class _BodyState extends State<_Body> {
         return NameCard(
           key: ValueKey('name_card_${name.nameId ?? name.name}'),
           name: name,
+          compact: widget.compactForSearch,
           fullName: _fullNameFor(context, name),
           detailsLabel: l10n.details,
           likedStatusLabel: l10n.likedThisName,
@@ -608,6 +622,7 @@ class _SwipeActionBar extends StatelessWidget {
     required this.l10n,
     required this.onDislike,
     required this.onLike,
+    super.key,
   });
 
   final MainSwipeViewModel viewModel;
