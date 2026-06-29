@@ -197,7 +197,7 @@ class _TopBar extends StatelessWidget {
               },
               transitionBuilder: (child, animation) {
                 final offsetAnimation = Tween<Offset>(
-                  begin: const Offset(-1, 0),
+                  begin: const Offset(1, 0),
                   end: Offset.zero,
                 ).animate(animation);
                 return ClipRect(
