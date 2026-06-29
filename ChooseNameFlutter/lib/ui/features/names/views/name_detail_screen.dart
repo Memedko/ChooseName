@@ -471,8 +471,6 @@ class _PersonRow extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       description!,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.noteText,
                         fontSize: 14,

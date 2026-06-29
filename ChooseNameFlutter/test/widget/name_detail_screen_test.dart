@@ -229,6 +229,54 @@ void main() {
     expect(find.text('A fictional name bearer.'), findsOne);
   });
 
+  testWidgets('shows the full famous person description', (tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final preferences = await SharedPreferences.getInstance();
+    const longDescription =
+        'Українська громадська та державна діячка, виконавиця, педагогиня, '
+        'мисткиня, міністерка охорони здоровʼя, авторка численних ініціатив '
+        'і публічних виступів, опис якої має показуватись повністю.';
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider.value(value: database),
+          Provider(create: (_) => NameRepository(localDatabase: database)),
+          Provider(
+            create: (_) => UserPreferencesRepository(preferences: preferences),
+          ),
+          Provider(create: (_) => BuildNameDetailSections()),
+        ],
+        child: const MaterialApp(
+          locale: Locale('uk'),
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: NameDetailScreen(
+            gender: GenderType.female,
+            name: NameRecord(
+              name: 'Уляна',
+              celebrities: <Celebrity>[
+                Celebrity(name: 'Уляна Супрун', description: longDescription),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final description = tester.widget<Text>(find.text(longDescription));
+
+    expect(description.maxLines, isNull);
+    expect(description.overflow, isNot(TextOverflow.ellipsis));
+  });
+
   testWidgets('uses route gender instead of saved selected gender for theme', (
     tester,
   ) async {
