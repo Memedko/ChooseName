@@ -293,54 +293,31 @@ class _SearchPanel extends StatelessWidget {
               onTap: _focusSearch,
               child: SizedBox(
                 height: 56,
-                child: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: controller,
-                  builder: (context, value, _) {
-                    return Row(
-                      children: [
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 120),
-                          opacity: value.text.isEmpty ? 1 : 0,
-                          child: Container(
-                            width: 2.5,
-                            height: 46,
-                            color: AppColors.mainText,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            key: const ValueKey('main_search_field'),
-                            controller: controller,
-                            focusNode: focusNode,
-                            autofocus: true,
-                            autocorrect: false,
-                            showCursor: value.text.isNotEmpty,
-                            textAlignVertical: TextAlignVertical.center,
-                            textCapitalization: TextCapitalization.words,
-                            onTap: _focusSearch,
-                            onChanged: onChanged,
-                            cursorColor: AppColors.mainText,
-                            cursorHeight: 46,
-                            cursorWidth: 2.5,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  color: AppColors.mainText,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              isCollapsed: true,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                child: TextField(
+                  key: const ValueKey('main_search_field'),
+                  controller: controller,
+                  focusNode: focusNode,
+                  autofocus: true,
+                  autocorrect: false,
+                  textAlignVertical: TextAlignVertical.center,
+                  textCapitalization: TextCapitalization.words,
+                  onTap: _focusSearch,
+                  onChanged: onChanged,
+                  cursorColor: AppColors.mainText,
+                  cursorHeight: 46,
+                  cursorWidth: 2.5,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: AppColors.mainText,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    isCollapsed: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
                 ),
               ),
             ),
