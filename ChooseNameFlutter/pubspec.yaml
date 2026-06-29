@@ -87,6 +87,7 @@ flutter:
     - assets/images/arrow_right.imageset/
     - assets/images/arrow_table.imageset/
     - assets/images/icon_close_menu.imageset/
+    - assets/images/icon_edit.imageset/
     - assets/images/icon_like_off.imageset/
     - assets/images/icon_like_on.imageset/
     - assets/images/icon_no_middle.imageset/
