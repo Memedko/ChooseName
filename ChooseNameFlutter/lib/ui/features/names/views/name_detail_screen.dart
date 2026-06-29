@@ -382,6 +382,7 @@ class _LanguagesRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: RichText(
+        key: const ValueKey('detail_languages_text'),
         text: TextSpan(
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: AppColors.secondaryText,
@@ -400,6 +401,7 @@ class _LanguagesRow extends StatelessWidget {
         .split(';')
         .map((item) => item.trim())
         .where((item) => item.isNotEmpty)
+        .where((item) => !_isRussianEntry(item))
         .toList();
     final spans = <InlineSpan>[];
     for (var index = 0; index < entries.length; index += 1) {
@@ -425,6 +427,11 @@ class _LanguagesRow extends StatelessWidget {
       }
     }
     return spans;
+  }
+
+  bool _isRussianEntry(String entry) {
+    final label = entry.split(':').first.trim().toLowerCase();
+    return label == 'рос' || label == 'рос.';
   }
 }
 
