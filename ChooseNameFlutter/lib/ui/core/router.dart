@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../domain/models/name_decision.dart';
 import '../features/favorites/views/favorites_screen.dart';
 import '../features/names/navigation/name_detail_route_args.dart';
 import '../features/names/views/name_detail_screen.dart';
@@ -29,10 +30,14 @@ GoRouter createRouter({List<NavigatorObserver> observers = const []}) {
         pageBuilder: (context, state) {
           final args = state.extra;
           final child = args is NameDetailRouteArgs
-              ? NameDetailScreen(name: args.name, gender: args.gender)
+              ? NameDetailScreen(
+                  name: args.name,
+                  gender: args.gender,
+                  returnDecisionToCaller: args.returnDecisionToCaller,
+                )
               : const MainSwipeScreen();
 
-          return CustomTransitionPage<void>(
+          return CustomTransitionPage<NameDecision>(
             key: state.pageKey,
             transitionDuration: const Duration(milliseconds: 320),
             reverseTransitionDuration: const Duration(milliseconds: 240),

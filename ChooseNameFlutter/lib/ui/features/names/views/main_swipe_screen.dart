@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../data/repositories/user_preferences_repository.dart';
 import '../../../../domain/models/gender_type.dart';
+import '../../../../domain/models/name_decision.dart';
 import '../../../../domain/models/name_record.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../core/app_colors.dart';
@@ -367,16 +368,41 @@ class _BodyState extends State<_Body> {
           detailsLabel: l10n.details,
           likedStatusLabel: l10n.likedThisName,
           dislikedStatusLabel: l10n.dislikedThisName,
-          onDetails: () => context.pushNamed(
-            'details',
-            extra: NameDetailRouteArgs(
-              name: name,
-              gender: viewModel.selectedGender,
-            ),
-          ),
+          onDetails: () =>
+              _openDetails(context, name, viewModel.selectedGender),
         );
       },
     );
+  }
+
+  Future<void> _openDetails(
+    BuildContext context,
+    NameRecord name,
+    GenderType gender,
+  ) async {
+    final decision = await context.pushNamed<NameDecision>(
+      'details',
+      extra: NameDetailRouteArgs(
+        name: name,
+        gender: gender,
+        returnDecisionToCaller: true,
+      ),
+    );
+    if (!mounted ||
+        widget.viewModel.selectedGender != gender ||
+        _controller.cardIndex == null) {
+      return;
+    }
+
+    switch (decision) {
+      case NameDecision.liked:
+        await _controller.swipeRight();
+      case NameDecision.disliked:
+        await _controller.swipeLeft();
+      case NameDecision.neutral:
+      case null:
+        return;
+    }
   }
 
   String? _fullNameFor(BuildContext context, NameRecord name) {

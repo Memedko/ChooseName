@@ -1,6 +1,9 @@
 import 'package:choose_name/data/repositories/name_repository.dart';
 import 'package:choose_name/data/repositories/user_preferences_repository.dart';
 import 'package:choose_name/data/services/local_name_database.dart';
+import 'package:choose_name/domain/models/gender_type.dart';
+import 'package:choose_name/domain/models/name_decision.dart';
+import 'package:choose_name/domain/models/name_record.dart';
 import 'package:choose_name/ui/core/app.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
@@ -30,4 +33,81 @@ void main() {
 
     await database.close();
   });
+
+  testWidgets('advances main picker after liking a name from details', (
+    tester,
+  ) async {
+    final database = await _pumpPickerWithTwoNames(tester);
+    await _chooseFromDetails(tester, 'detail_like_button');
+
+    expect(find.byKey(const ValueKey('name_card_marko')), findsNothing);
+    expect(find.byKey(const ValueKey('name_card_andrii')), findsOneWidget);
+
+    final liked = await database.getLikedNames(GenderType.male);
+    expect(liked.single.nameId, 'marko');
+    final marko = await database.findNameByExactText(GenderType.male, 'Марко');
+    expect(marko?.decision, NameDecision.liked);
+    final unseen = await database.getUnseenNames(GenderType.male);
+    expect(unseen.map((name) => name.nameId), <String?>['andrii']);
+  });
+
+  testWidgets('advances main picker after disliking a name from details', (
+    tester,
+  ) async {
+    final database = await _pumpPickerWithTwoNames(tester);
+    await _chooseFromDetails(tester, 'detail_dislike_button');
+
+    expect(find.byKey(const ValueKey('name_card_marko')), findsNothing);
+    expect(find.byKey(const ValueKey('name_card_andrii')), findsOneWidget);
+
+    final marko = await database.findNameByExactText(GenderType.male, 'Марко');
+    expect(marko?.decision, NameDecision.disliked);
+    final unseen = await database.getUnseenNames(GenderType.male);
+    expect(unseen.map((name) => name.nameId), <String?>['andrii']);
+  });
+}
+
+Future<LocalNameDatabase> _pumpPickerWithTwoNames(WidgetTester tester) async {
+  SharedPreferences.setMockInitialValues(<String, Object>{});
+  final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+  addTearDown(database.close);
+  await database.upsertName(
+    GenderType.male,
+    const NameRecord(
+      nameId: 'marko',
+      name: 'Марко',
+      description: 'Значення імені',
+    ),
+  );
+  await database.upsertName(
+    GenderType.male,
+    const NameRecord(
+      nameId: 'andrii',
+      name: 'Андрій',
+      description: 'Значення імені',
+    ),
+  );
+  final preferences = await SharedPreferences.getInstance();
+
+  await tester.pumpWidget(
+    ChooseNameApp(
+      nameRepository: NameRepository(localDatabase: database),
+      userPreferencesRepository: UserPreferencesRepository(
+        preferences: preferences,
+      ),
+      localNameDatabase: database,
+      startupSplashDuration: Duration.zero,
+    ),
+  );
+  await tester.pumpAndSettle();
+
+  expect(find.byKey(const ValueKey('name_card_marko')), findsOneWidget);
+  return database;
+}
+
+Future<void> _chooseFromDetails(WidgetTester tester, String buttonKey) async {
+  await tester.tap(find.byKey(const ValueKey('name_card_marko')));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(ValueKey(buttonKey)));
+  await tester.pumpAndSettle();
 }

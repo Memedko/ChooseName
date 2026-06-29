@@ -20,10 +20,16 @@ import '../../../core/app_colors.dart';
 import '../navigation/name_detail_route_args.dart';
 
 class NameDetailScreen extends StatelessWidget {
-  const NameDetailScreen({required this.name, required this.gender, super.key});
+  const NameDetailScreen({
+    required this.name,
+    required this.gender,
+    this.returnDecisionToCaller = false,
+    super.key,
+  });
 
   final NameRecord name;
   final GenderType gender;
+  final bool returnDecisionToCaller;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +80,12 @@ class NameDetailScreen extends StatelessWidget {
                     bottomPadding: showDecisionBar ? 10 : 20,
                   ),
                 ),
-                if (showDecisionBar) _DecisionBar(name: name, gender: gender),
+                if (showDecisionBar)
+                  _DecisionBar(
+                    name: name,
+                    gender: gender,
+                    returnDecisionToCaller: returnDecisionToCaller,
+                  ),
               ],
             ),
           ),
@@ -792,10 +803,15 @@ class _DividerLine extends StatelessWidget {
 }
 
 class _DecisionBar extends StatelessWidget {
-  const _DecisionBar({required this.name, required this.gender});
+  const _DecisionBar({
+    required this.name,
+    required this.gender,
+    required this.returnDecisionToCaller,
+  });
 
   final NameRecord name;
   final GenderType gender;
+  final bool returnDecisionToCaller;
 
   @override
   Widget build(BuildContext context) {
@@ -827,6 +843,14 @@ class _DecisionBar extends StatelessWidget {
   }
 
   Future<void> _setDecision(BuildContext context, {required bool liked}) async {
+    final decision = liked ? NameDecision.liked : NameDecision.disliked;
+    if (returnDecisionToCaller) {
+      if (context.canPop()) {
+        context.pop(decision);
+      }
+      return;
+    }
+
     final nameId = name.nameId;
     if (nameId != null) {
       final repository = context.read<NameRepository>();
