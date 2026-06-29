@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:choose_name/data/repositories/name_repository.dart';
 import 'package:choose_name/data/repositories/user_preferences_repository.dart';
 import 'package:choose_name/data/services/local_name_database.dart';
@@ -8,8 +6,8 @@ import 'package:choose_name/domain/models/name_decision.dart';
 import 'package:choose_name/domain/models/name_record.dart';
 import 'package:choose_name/ui/core/app.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -76,14 +74,17 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('open_search_button')));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 260));
+    await tester.pump();
+    await tester.pump();
 
     expect(find.byKey(const ValueKey('main_search_panel')), findsOneWidget);
     expect(find.byKey(const ValueKey('main_search_field')), findsOneWidget);
+    final searchInput = tester.widget<EditableText>(find.byType(EditableText));
+    expect(searchInput.focusNode.hasFocus, isTrue);
+    expect(tester.testTextInput.hasAnyClients, isTrue);
+    expect(tester.testTextInput.isVisible, isTrue);
 
-    await tester.enterText(
-      find.byKey(const ValueKey('main_search_field')),
-      'Андрій',
-    );
+    await tester.enterText(find.byType(EditableText), 'Андрій');
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 260));
 

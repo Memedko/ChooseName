@@ -14,6 +14,9 @@ import '../navigation/name_detail_route_args.dart';
 import '../view_models/main_swipe_view_model.dart';
 import 'name_card.dart';
 
+const _searchPanelOpenDuration = Duration(milliseconds: 240);
+const _searchPanelCloseDuration = Duration(milliseconds: 200);
+
 class MainSwipeScreen extends StatefulWidget {
   const MainSwipeScreen({super.key});
 
@@ -24,10 +27,14 @@ class MainSwipeScreen extends StatefulWidget {
 class _MainSwipeScreenState extends State<MainSwipeScreen> {
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
+  final _searchFieldKey = GlobalKey();
   bool _searchOpen = false;
+  bool _searchInputActive = false;
+  int _searchFocusRequest = 0;
 
   @override
   void dispose() {
+    _searchFocusRequest++;
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
@@ -35,25 +42,83 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
 
   void _openSearch() {
     if (_searchOpen) {
-      _searchFocusNode.requestFocus();
-      SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+      final request = ++_searchFocusRequest;
+      if (!_searchInputActive) {
+        setState(() => _searchInputActive = true);
+        _showSearchKeyboardWhenReady(request);
+      } else {
+        _requestSearchKeyboard();
+      }
       return;
     }
-    setState(() => _searchOpen = true);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _searchOpen) {
-        _searchFocusNode.requestFocus();
-        SystemChannels.textInput.invokeMethod<void>('TextInput.show');
-      }
+    setState(() {
+      _searchOpen = true;
+      _searchInputActive = false;
     });
+    final request = ++_searchFocusRequest;
+    Future<void>.delayed(_searchPanelOpenDuration, () {
+      if (!mounted || !_searchOpen || request != _searchFocusRequest) {
+        return;
+      }
+      setState(() => _searchInputActive = true);
+      _showSearchKeyboardWhenReady(request);
+    });
+  }
+
+  void _showSearchKeyboardWhenReady(int request) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted ||
+            !_searchOpen ||
+            !_searchInputActive ||
+            request != _searchFocusRequest) {
+          return;
+        }
+        _requestSearchKeyboard();
+      });
+    });
+  }
+
+  void _requestSearchKeyboard() {
+    final fieldContext = _searchFieldKey.currentContext;
+    final editableText = fieldContext == null
+        ? null
+        : _findEditableTextState(fieldContext as Element);
+    if (editableText != null) {
+      editableText.requestKeyboard();
+      return;
+    }
+    _searchFocusNode.requestFocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+  }
+
+  EditableTextState? _findEditableTextState(Element root) {
+    EditableTextState? result;
+    void visitor(Element element) {
+      if (result != null) {
+        return;
+      }
+      if (element is StatefulElement && element.state is EditableTextState) {
+        result = element.state as EditableTextState;
+        return;
+      }
+      element.visitChildren(visitor);
+    }
+
+    root.visitChildren(visitor);
+    return result;
   }
 
   void _closeSearch(MainSwipeViewModel viewModel) {
     final hadSearchText = _searchController.text.trim().isNotEmpty;
+    _searchFocusRequest++;
     _searchFocusNode.unfocus();
     _searchController.clear();
     if (_searchOpen) {
-      setState(() => _searchOpen = false);
+      setState(() {
+        _searchOpen = false;
+        _searchInputActive = false;
+      });
     }
     if (hadSearchText) {
       viewModel.search('');
@@ -64,10 +129,14 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
     if (viewModel.selectedGender == gender) {
       return;
     }
+    _searchFocusRequest++;
     _searchFocusNode.unfocus();
     _searchController.clear();
     if (_searchOpen) {
-      setState(() => _searchOpen = false);
+      setState(() {
+        _searchOpen = false;
+        _searchInputActive = false;
+      });
     }
     viewModel.selectGender(gender);
   }
@@ -100,6 +169,8 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
               _TopBar(
                 isMale: isMale,
                 searchOpen: _searchOpen,
+                searchInputActive: _searchInputActive,
+                searchFieldKey: _searchFieldKey,
                 searchController: _searchController,
                 searchFocusNode: _searchFocusNode,
                 onSearchChanged: viewModel.search,
@@ -130,6 +201,8 @@ class _TopBar extends StatelessWidget {
   const _TopBar({
     required this.isMale,
     required this.searchOpen,
+    required this.searchInputActive,
+    required this.searchFieldKey,
     required this.searchController,
     required this.searchFocusNode,
     required this.onSearchChanged,
@@ -139,6 +212,8 @@ class _TopBar extends StatelessWidget {
 
   final bool isMale;
   final bool searchOpen;
+  final bool searchInputActive;
+  final GlobalKey searchFieldKey;
   final TextEditingController searchController;
   final FocusNode searchFocusNode;
   final ValueChanged<String> onSearchChanged;
@@ -186,8 +261,8 @@ class _TopBar extends StatelessWidget {
           Positioned.fill(
             child: AnimatedSwitcher(
               key: const ValueKey('main_search_switcher'),
-              duration: const Duration(milliseconds: 240),
-              reverseDuration: const Duration(milliseconds: 200),
+              duration: _searchPanelOpenDuration,
+              reverseDuration: _searchPanelCloseDuration,
               switchInCurve: Curves.easeOutCubic,
               switchOutCurve: Curves.easeInCubic,
               layoutBuilder: (currentChild, previousChildren) {
@@ -217,6 +292,8 @@ class _TopBar extends StatelessWidget {
                   ? _SearchPanel(
                       key: const ValueKey('main_search_panel'),
                       isMale: isMale,
+                      inputActive: searchInputActive,
+                      fieldKey: searchFieldKey,
                       controller: searchController,
                       focusNode: searchFocusNode,
                       onChanged: onSearchChanged,
@@ -258,6 +335,8 @@ class _TopIconButton extends StatelessWidget {
 class _SearchPanel extends StatelessWidget {
   const _SearchPanel({
     required this.isMale,
+    required this.inputActive,
+    required this.fieldKey,
     required this.controller,
     required this.focusNode,
     required this.onChanged,
@@ -269,15 +348,12 @@ class _SearchPanel extends StatelessWidget {
   static const _girlSearchBar = Color(0xFF983374);
 
   final bool isMale;
+  final bool inputActive;
+  final GlobalKey fieldKey;
   final TextEditingController controller;
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
   final VoidCallback onClose;
-
-  void _focusSearch() {
-    focusNode.requestFocus();
-    SystemChannels.textInput.invokeMethod<void>('TextInput.show');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -294,35 +370,38 @@ class _SearchPanel extends StatelessWidget {
           ),
           const SizedBox(width: 18),
           Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: _focusSearch,
-              child: SizedBox(
-                height: 56,
-                child: TextField(
-                  key: const ValueKey('main_search_field'),
-                  controller: controller,
-                  focusNode: focusNode,
-                  autofocus: true,
-                  autocorrect: false,
-                  textAlignVertical: TextAlignVertical.center,
-                  textCapitalization: TextCapitalization.words,
-                  onTap: _focusSearch,
-                  onChanged: onChanged,
-                  cursorColor: AppColors.mainText,
-                  cursorHeight: 46,
-                  cursorWidth: 2.5,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.mainText,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    isCollapsed: true,
-                    contentPadding: EdgeInsets.zero,
+            child: SizedBox(
+              height: 56,
+              child: KeyedSubtree(
+                key: const ValueKey('main_search_field'),
+                child: KeyedSubtree(
+                  key: fieldKey,
+                  child: TextField(
+                    key: ValueKey(
+                      'main_search_text_field_${inputActive ? 'active' : 'idle'}',
+                    ),
+                    controller: controller,
+                    focusNode: focusNode,
+                    autofocus: inputActive,
+                    autocorrect: false,
+                    textAlignVertical: TextAlignVertical.center,
+                    textCapitalization: TextCapitalization.words,
+                    onChanged: onChanged,
+                    cursorColor: AppColors.mainText,
+                    cursorHeight: 46,
+                    cursorWidth: 2.5,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.mainText,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      isCollapsed: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
               ),
