@@ -722,6 +722,7 @@ class _RelatedNameRow extends StatelessWidget {
         }
       },
       child: SizedBox(
+        key: ValueKey('detail_related_row_$name'),
         height: 66,
         child: Stack(
           children: [
@@ -732,31 +733,43 @@ class _RelatedNameRow extends StatelessWidget {
               bottom: 0,
               child: _DividerLine(),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.mainText,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
+            Positioned.fill(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 30, right: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        name,
+                        key: ValueKey('detail_related_name_$name'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: AppColors.mainText,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                     ),
-                  ),
-                  Opacity(
-                    opacity: 0.4,
-                    child: Image.asset(
-                      'assets/images/arrow_right.imageset/arrow_right.png',
+                    SizedBox(
+                      key: ValueKey('detail_related_arrow_$name'),
                       width: 24,
                       height: 24,
+                      child: Center(
+                        child: Opacity(
+                          opacity: 0.4,
+                          child: Image.asset(
+                            'assets/images/arrow_right.imageset/arrow_right.png',
+                            width: 24,
+                            height: 23,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

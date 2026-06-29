@@ -120,6 +120,55 @@ void main() {
     expect((buttonCenter.dy - arrowCenter.dy).abs(), lessThanOrEqualTo(0.5));
   });
 
+  testWidgets('centers related name and arrow vertically in the related row', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final preferences = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider.value(value: database),
+          Provider(create: (_) => NameRepository(localDatabase: database)),
+          Provider(
+            create: (_) => UserPreferencesRepository(preferences: preferences),
+          ),
+          Provider(create: (_) => BuildNameDetailSections()),
+        ],
+        child: const MaterialApp(
+          locale: Locale('uk'),
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: NameDetailScreen(
+            gender: GenderType.male,
+            name: NameRecord(name: 'Марко', sameNames: 'Маркіян'),
+          ),
+        ),
+      ),
+    );
+
+    final rowCenter = tester.getCenter(
+      find.byKey(const ValueKey('detail_related_row_Маркіян')),
+    );
+    final nameCenter = tester.getCenter(
+      find.byKey(const ValueKey('detail_related_name_Маркіян')),
+    );
+    final arrowCenter = tester.getCenter(
+      find.byKey(const ValueKey('detail_related_arrow_Маркіян')),
+    );
+
+    expect((rowCenter.dy - nameCenter.dy).abs(), lessThanOrEqualTo(0.5));
+    expect((rowCenter.dy - arrowCenter.dy).abs(), lessThanOrEqualTo(0.5));
+  });
+
   testWidgets('renders celebrity and character image rows', (tester) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
