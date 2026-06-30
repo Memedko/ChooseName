@@ -200,8 +200,38 @@ class _DetailsButton extends StatelessWidget {
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.keyboard_arrow_down, size: 23),
+            const _DetailsArrow(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailsArrow extends StatelessWidget {
+  const _DetailsArrow();
+
+  static const _asset = 'assets/images/arrow_bottom.imageset/arrow_bottom.png';
+  static const _assetWidth = 23.0;
+  static const _assetHeight = 22.0;
+  static const _visibleHeight = 12.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 23,
+      height: 23,
+      child: Center(
+        child: ClipRect(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            heightFactor: _visibleHeight / _assetHeight,
+            child: Image.asset(
+              _asset,
+              width: _assetWidth,
+              height: _assetHeight,
+            ),
+          ),
         ),
       ),
     );
