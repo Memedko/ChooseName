@@ -113,6 +113,7 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
     final hadSearchText = _searchController.text.trim().isNotEmpty;
     _searchFocusRequest++;
     _searchFocusNode.unfocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
     _searchController.clear();
     if (_searchOpen) {
       setState(() {
@@ -131,6 +132,7 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
     }
     _searchFocusRequest++;
     _searchFocusNode.unfocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
     _searchController.clear();
     if (_searchOpen) {
       setState(() {
@@ -146,8 +148,7 @@ class _MainSwipeScreenState extends State<MainSwipeScreen> {
     final l10n = AppLocalizations.of(context)!;
     final viewModel = context.watch<MainSwipeViewModel>();
     final isMale = viewModel.selectedGender.isMale;
-    final compactForSearch =
-        _searchOpen && MediaQuery.viewInsetsOf(context).bottom > 0;
+    final compactForSearch = MediaQuery.viewInsetsOf(context).bottom > 0;
 
     return Scaffold(
       body: DecoratedBox(
