@@ -360,6 +360,7 @@ class _SearchPanel extends StatelessWidget {
     return ColoredBox(
       color: isMale ? _boySearchBar : _girlSearchBar,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(width: 34),
           const Icon(
@@ -399,8 +400,8 @@ class _SearchPanel extends StatelessWidget {
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      isCollapsed: true,
-                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 5),
                     ),
                   ),
                 ),
