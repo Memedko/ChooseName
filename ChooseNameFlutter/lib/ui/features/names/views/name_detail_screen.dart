@@ -472,22 +472,23 @@ class _PersonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasUrl = url?.isNotEmpty ?? false;
     return InkWell(
-      onTap: url == null ? null : () => launchUrl(Uri.parse(url!)),
+      onTap: hasUrl ? () => launchUrl(Uri.parse(url!)) : null,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(30, 10, 30, 15),
-        child: Row(
+        padding: const EdgeInsets.fromLTRB(30, 10, 10, 15),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (photo?.isNotEmpty ?? false) ...[
-              _PersonImage(photo: photo!, name: name),
-              const SizedBox(width: 12),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (photo?.isNotEmpty ?? false) ...[
+                  _PersonImage(photo: photo!, name: name),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
                     name,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColors.mainText,
@@ -495,27 +496,28 @@ class _PersonRow extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  if (description?.isNotEmpty ?? false) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      description!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.noteText,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        height: 1.25,
-                      ),
-                    ),
-                  ],
+                ),
+                if (hasUrl) ...[
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.open_in_new,
+                    color: AppColors.secondaryText,
+                    size: 22,
+                  ),
                 ],
-              ),
+              ],
             ),
-            if (url != null) ...[
-              const SizedBox(width: 8),
-              const Icon(
-                Icons.open_in_new,
-                color: AppColors.secondaryText,
-                size: 22,
+            if (description?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 6),
+              Text(
+                description!,
+                key: ValueKey('detail_person_description_$name'),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.noteText,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  height: 1.25,
+                ),
               ),
             ],
           ],

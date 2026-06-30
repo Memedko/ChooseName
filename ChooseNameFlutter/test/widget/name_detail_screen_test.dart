@@ -12,6 +12,7 @@ import 'package:choose_name/ui/core/constants.dart';
 import 'package:choose_name/ui/features/names/views/name_detail_screen.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -324,6 +325,65 @@ void main() {
 
     expect(description.maxLines, isNull);
     expect(description.overflow, isNot(TextOverflow.ellipsis));
+  });
+
+  testWidgets('expands famous person description close to the screen edge', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final database = LocalNameDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(database.close);
+    final preferences = await SharedPreferences.getInstance();
+    const description =
+        'Українська громадська діячка з довгим описом, який має займати '
+        'майже всю ширину екрана, навіть якщо для персони є фото.';
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider.value(value: database),
+          Provider(create: (_) => NameRepository(localDatabase: database)),
+          Provider(
+            create: (_) => UserPreferencesRepository(preferences: preferences),
+          ),
+          Provider(create: (_) => BuildNameDetailSections()),
+        ],
+        child: const MaterialApp(
+          locale: Locale('uk'),
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: NameDetailScreen(
+            gender: GenderType.female,
+            name: NameRecord(
+              name: 'Уляна',
+              celebrities: <Celebrity>[
+                Celebrity(
+                  name: 'Уляна Супрун',
+                  photo: 'https://example.com/uliana.jpg',
+                  description: description,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final descriptionRenderObject = tester.renderObject<RenderParagraph>(
+      find.byKey(const ValueKey('detail_person_description_Уляна Супрун')),
+    );
+
+    expect(descriptionRenderObject.constraints.maxWidth, closeTo(350, 0.1));
   });
 
   testWidgets('uses route gender instead of saved selected gender for theme', (
