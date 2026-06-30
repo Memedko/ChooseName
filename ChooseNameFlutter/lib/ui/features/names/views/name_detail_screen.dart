@@ -477,49 +477,57 @@ class _PersonRow extends StatelessWidget {
       onTap: hasUrl ? () => launchUrl(Uri.parse(url!)) : null,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(30, 10, 10, 15),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (photo?.isNotEmpty ?? false) ...[
-                  _PersonImage(photo: photo!, name: name),
-                  const SizedBox(width: 12),
-                ],
-                Expanded(
-                  child: Text(
-                    name,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppColors.mainText,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                if (hasUrl) ...[
-                  const SizedBox(width: 8),
-                  const Icon(
-                    Icons.open_in_new,
-                    color: AppColors.secondaryText,
-                    size: 22,
-                  ),
-                ],
-              ],
-            ),
-            if (description?.isNotEmpty ?? false) ...[
-              const SizedBox(height: 6),
-              Text(
-                description!,
-                key: ValueKey('detail_person_description_$name'),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.noteText,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  height: 1.25,
-                ),
-              ),
+            if (photo?.isNotEmpty ?? false) ...[
+              _PersonImage(photo: photo!, name: name),
+              const SizedBox(width: 12),
             ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: AppColors.mainText,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                      ),
+                      if (hasUrl) ...[
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.open_in_new,
+                          color: AppColors.secondaryText,
+                          size: 22,
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (description?.isNotEmpty ?? false) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      description!,
+                      key: ValueKey('detail_person_description_$name'),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.noteText,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        height: 1.25,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ),
