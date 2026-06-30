@@ -87,8 +87,10 @@ class SettingsScreen extends StatelessWidget {
     }
     final nameRepository = context.read<NameRepository>();
     final userPreferencesRepository = context.read<UserPreferencesRepository>();
+    final selectedGender = userPreferencesRepository.getSelectedGender();
     await nameRepository.clearAll();
     await userPreferencesRepository.clearUserData();
+    await userPreferencesRepository.setSelectedGender(selectedGender);
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
