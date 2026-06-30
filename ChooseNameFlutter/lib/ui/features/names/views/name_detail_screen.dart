@@ -575,17 +575,18 @@ class _SongRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasUrl = song.url?.isNotEmpty ?? false;
     return InkWell(
-      onTap: song.url == null ? null : () => launchUrl(Uri.parse(song.url!)),
+      onTap: hasUrl ? () => launchUrl(Uri.parse(song.url!)) : null,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(30, 0, 30, 10),
-        child: Row(
+        padding: const EdgeInsets.fromLTRB(30, 0, 10, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
                     song.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColors.mainText,
@@ -593,24 +594,27 @@ class _SongRow extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  if (song.singer?.isNotEmpty ?? false) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      song.singer!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.noteText,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+                ),
+                if (hasUrl) ...[
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.open_in_new,
+                    color: AppColors.secondaryText,
+                    size: 22,
+                  ),
                 ],
-              ),
+              ],
             ),
-            if (song.url != null)
-              const SizedBox.square(
-                dimension: 40,
-                child: Icon(Icons.open_in_new, color: AppColors.secondaryText),
+            if (song.singer?.isNotEmpty ?? false) ...[
+              const SizedBox(height: 4),
+              Text(
+                song.singer!,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.noteText,
+                  fontSize: 14,
+                ),
               ),
+            ],
           ],
         ),
       ),
