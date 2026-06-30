@@ -10,8 +10,7 @@ class AppConstants {
   static const isMaleSelected = 'isMaleSelected';
   static const nameLimit = 50;
 
-  static const privacyPolicyUrl =
-      'http://babysname.tilda.ws/app-privacy-policy';
+  static const privacyPolicyUrl = 'https://itworks.in.ua/legal/name_pp_uk.html';
   static const appStoreUrl = 'https://apps.apple.com/ua/app/id1553686058';
   static const playStoreUrl =
       'https://play.google.com/store/apps/details?id=com.itworksinua.BabysName2';
