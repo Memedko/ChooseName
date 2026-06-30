@@ -745,79 +745,125 @@ class _ChildRow extends StatelessWidget {
   }
 }
 
-class _RelatedNameRow extends StatelessWidget {
+class _RelatedNameRow extends StatefulWidget {
   const _RelatedNameRow({required this.name, required this.gender});
 
   final String name;
   final GenderType gender;
 
   @override
+  State<_RelatedNameRow> createState() => _RelatedNameRowState();
+}
+
+class _RelatedNameRowState extends State<_RelatedNameRow> {
+  NameRepository? _repository;
+  Future<NameRecord?>? _matchFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final repository = context.read<NameRepository>();
+    if (!identical(_repository, repository)) {
+      _repository = repository;
+      _matchFuture = repository.findExact(widget.gender, widget.name);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _RelatedNameRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.gender != widget.gender || oldWidget.name != widget.name) {
+      _matchFuture = _repository?.findExact(widget.gender, widget.name);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        final repository = context.read<NameRepository>();
-        final match = await repository.findExact(gender, name);
-        if (context.mounted && match != null) {
-          context.pushNamed(
-            'details',
-            extra: NameDetailRouteArgs(name: match, gender: gender),
-          );
-        }
-      },
-      child: SizedBox(
-        key: ValueKey('detail_related_row_$name'),
-        height: 66,
-        child: Stack(
-          children: [
-            const Positioned(left: 0, right: 0, top: 0, child: _DividerLine()),
-            const Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: _DividerLine(),
-            ),
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 30, right: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        name,
-                        key: ValueKey('detail_related_name_$name'),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: AppColors.mainText,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
+    return FutureBuilder<NameRecord?>(
+      future: _matchFuture,
+      builder: (context, snapshot) {
+        final match = snapshot.data;
+        return InkWell(
+          onTap: match == null
+              ? null
+              : () {
+                  context.pushNamed(
+                    'details',
+                    extra: NameDetailRouteArgs(
+                      name: match,
+                      gender: widget.gender,
                     ),
-                    SizedBox(
-                      key: ValueKey('detail_related_arrow_$name'),
-                      width: 24,
-                      height: 24,
-                      child: Center(
-                        child: Opacity(
-                          opacity: 0.4,
-                          child: Image.asset(
-                            'assets/images/arrow_right.imageset/arrow_right.png',
-                            width: 24,
-                            height: 23,
+                  );
+                },
+          child: SizedBox(
+            key: ValueKey('detail_related_row_${widget.name}'),
+            height: 66,
+            child: Stack(
+              children: [
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: _DividerLine(),
+                ),
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: _DividerLine(),
+                ),
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30, right: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.name,
+                            key: ValueKey('detail_related_name_${widget.name}'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: AppColors.mainText,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ),
-                      ),
+                        Visibility(
+                          visible: match != null,
+                          maintainAnimation: true,
+                          maintainSize: true,
+                          maintainState: true,
+                          child: SizedBox(
+                            key: ValueKey(
+                              'detail_related_arrow_${widget.name}',
+                            ),
+                            width: 24,
+                            height: 24,
+                            child: Center(
+                              child: Opacity(
+                                opacity: 0.4,
+                                child: Image.asset(
+                                  'assets/images/arrow_right.imageset/arrow_right.png',
+                                  width: 24,
+                                  height: 23,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
