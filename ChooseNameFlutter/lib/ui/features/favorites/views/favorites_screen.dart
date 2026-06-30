@@ -772,35 +772,38 @@ class _SearchResultTile extends StatelessWidget {
               bottom: 0,
               child: _DividerLine(),
             ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    name.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppColors.mainText.withValues(
-                        alpha: name.decision.value == 0 ? 1 : 0.4,
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30, right: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      name.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.mainText.withValues(
+                          alpha: name.decision.value == 0 ? 1 : 0.4,
+                        ),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0,
                       ),
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0,
                     ),
                   ),
-                ),
-                if (name.decision.value != 0)
-                  Image.asset(
-                    name.decision.value > 0
-                        ? 'assets/images/icon_yes_middle.imageset/icon_yes_middle.png'
-                        : 'assets/images/icon_no_middle.imageset/icon_no_middle.png',
-                    width: 35,
-                    height: 35,
-                    opacity: const AlwaysStoppedAnimation<double>(0.4),
-                  ),
-              ],
+                  if (name.decision.value != 0)
+                    Image.asset(
+                      name.decision.value > 0
+                          ? 'assets/images/icon_yes_middle.imageset/icon_yes_middle.png'
+                          : 'assets/images/icon_no_middle.imageset/icon_no_middle.png',
+                      width: 35,
+                      height: 35,
+                      opacity: const AlwaysStoppedAnimation<double>(0.4),
+                    ),
+                ],
+              ),
             ),
           ),
         ],
