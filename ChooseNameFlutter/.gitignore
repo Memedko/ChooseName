@@ -39,6 +39,9 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Local release packages can include signing keys and passwords.
+release/
+
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
