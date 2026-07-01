@@ -343,7 +343,7 @@ abstract class AppLocalizations {
   /// No description provided for @clearCacheConfirm.
   ///
   /// In uk, this message translates to:
-  /// **'Видалити збережені імена, дані профілю та кеш імен?'**
+  /// **'Очистити всі збережені дані?'**
   String get clearCacheConfirm;
 
   /// No description provided for @clear.

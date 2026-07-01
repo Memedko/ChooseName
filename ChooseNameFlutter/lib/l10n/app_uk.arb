@@ -44,7 +44,7 @@
   "fatherName": "По батькові",
   "settingsTitle": "Налаштування",
   "clearCache": "Очистити дані",
-  "clearCacheConfirm": "Видалити збережені імена, дані профілю та кеш імен?",
+  "clearCacheConfirm": "Очистити всі збережені дані?",
   "clear": "Очистити",
   "cleared": "Очищено",
   "cancel": "Скасувати",

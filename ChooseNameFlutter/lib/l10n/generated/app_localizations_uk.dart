@@ -132,8 +132,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get clearCache => 'Очистити дані';
 
   @override
-  String get clearCacheConfirm =>
-      'Видалити збережені імена, дані профілю та кеш імен?';
+  String get clearCacheConfirm => 'Очистити всі збережені дані?';
 
   @override
   String get clear => 'Очистити';
