@@ -337,7 +337,7 @@ abstract class AppLocalizations {
   /// No description provided for @clearCache.
   ///
   /// In uk, this message translates to:
-  /// **'Очистити збережені дані'**
+  /// **'Очистити дані'**
   String get clearCache;
 
   /// No description provided for @clearCacheConfirm.

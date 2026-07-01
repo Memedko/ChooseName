@@ -129,7 +129,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsTitle => 'Налаштування';
 
   @override
-  String get clearCache => 'Очистити збережені дані';
+  String get clearCache => 'Очистити дані';
 
   @override
   String get clearCacheConfirm =>
